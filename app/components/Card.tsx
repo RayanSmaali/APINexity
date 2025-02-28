@@ -19,9 +19,10 @@
         minute: '2-digit', // "02"
         second: '2-digit', // "38"
         timeZoneName: 'short' // "GMT+1"
-    }).format(date);
+    }).format(date);  
 };
-
+//s
+//fegrg
 /*----------------------------------------------------------------
   function renderComment(ticket) : 
     -commentArray :  tableau de sortie de parseComment. typiquement on aura commentArray[i] est le titre ; commentArray[i+1] est la valeur correspondant à ce titre
@@ -31,7 +32,7 @@
   function renderComment(commentArray) {
     if (!commentArray || commentArray.length === 0) return null;
   
-    let result = [];
+    const result = [];
     const urlRegex = /(https?:\/\/[^\s]+)/g; // Regex pour détecter les URLs
   
     for (let i = 0; i < commentArray.length; i += 2) {

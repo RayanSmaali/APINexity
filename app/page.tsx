@@ -48,7 +48,7 @@ const Home = () => {
     str_cleaned = str_cleaned.replaceAll("</i>", "");
     str_cleaned = str_cleaned.replaceAll("<br>", "\n");
     str_cleaned = str_cleaned.replace("<td>", "")// replace au lieu de replaceAll pour ne supprimer que le premier
-    let split_string = str_cleaned.split("<td>");
+    const split_string = str_cleaned.split("<td>");
     return split_string;
   }
     
