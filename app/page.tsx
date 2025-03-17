@@ -84,11 +84,12 @@ const Home = () => {
 
       const data = await response.json();
       data.records = data.records.filter(ticket => 
-        ticket.STATUS.STATUS_ID !== 9 &&  // En attente de validation
-        ticket.STATUS.STATUS_ID !== 8 &&  // Clôturé
-        ticket.STATUS.STATUS_ID !== 7 &&  // Archivé
-        ticket.STATUS.STATUS_ID !== 43    // Annulé par le demandeur
+        ticket.STATUS.STATUS_ID !== "9" &&  // En attente de validation
+        ticket.STATUS.STATUS_ID !== "8" &&  // Clôturé
+        ticket.STATUS.STATUS_ID !== "7" &&  // Archivé
+        ticket.STATUS.STATUS_ID !== "43"    // Annulé par le demandeur
       );
+
 
       setAllTickets(data);
     } catch (error) {

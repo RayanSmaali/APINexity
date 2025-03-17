@@ -69,7 +69,7 @@ const SendConfirmation = async (e, RFC_NUMBER) => {
     e.preventDefault();
 
     try {
-        const response = await fetch(`/api/confirm?rfc_number=${RFC_NUMBER}`, {
+        const response = await fetch(`/api/confirm/${RFC_NUMBER}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" }
         });
