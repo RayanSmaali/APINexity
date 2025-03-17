@@ -19,7 +19,7 @@ const Home = () => {
     On va ensuite séparer chaque case du tableau avec la méthode .split pour l'insérer dans un array que l'on renvoie.
   ----------------------------------------------------------------*/
   function parseComment(comment) {
-    let str_cleaned = comment.replaceAll("<table>", "")
+    const str_cleaned = comment.replaceAll("<table>", "")
       .replaceAll("</table>", "")
       .replaceAll("<tr>", "")
       .replaceAll("</tr>", "")
@@ -112,7 +112,7 @@ const Home = () => {
     if (allTickets) {
       fetchAllComments();
     }
-  }, [loadingRequests]);
+  }, [allTickets, fetchAllComments]);
 
   if (loadingRequests) return <p>Chargement des requêtes...</p>;
   if (loadingComments) return <p>Chargement des commentaires...</p>;
