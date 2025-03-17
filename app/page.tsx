@@ -112,7 +112,7 @@ const Home = () => {
     if (allTickets) {
       fetchAllComments();
     }
-  }, [allTickets, fetchAllComments]);
+  }, [loadingRequests]);
 
   if (loadingRequests) return <p>Chargement des requêtes...</p>;
   if (loadingComments) return <p>Chargement des commentaires...</p>;

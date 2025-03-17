@@ -1,13 +1,14 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextResponse } from "next/server";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    if (req.method !== 'PUT') {
-        return res.status(405).json({ error: 'Méthode non autorisée' });
-    }
-
-    const { rfc_number } = req.query;
+export async function PUT(req: Request) {
     const token = process.env.EASYVISTA_API_TOKEN;
     const baseUrl = process.env.BASE_URL;
+    const { searchParams } = new URL(req.url);
+    const rfc_number = searchParams.get("rfc_number");
+
+    if (!rfc_number) {
+        return NextResponse.json({ error: "Missing RFC_NUMBER" }, { status: 400 });
+    }
 
     const requestBody = {
         "end_action": {
@@ -18,10 +19,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     try {
         const response = await fetch(`${baseUrl}/actions/${rfc_number}`, {
-            method: 'PUT',
+            method: "PUT",
             headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
             },
             body: JSON.stringify(requestBody)
         });
@@ -31,8 +32,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
 
         const data = await response.json();
-        res.status(200).json({ message: `Ticket ${rfc_number} terminé avec succès`, data });
+        return NextResponse.json({ message: `Ticket ${rfc_number} terminé avec succès`, data });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
