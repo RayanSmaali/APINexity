@@ -9,6 +9,16 @@ const Home = () => {
   const [loadingComments, setloadingComments] = useState(true);
   const [error, setError] = useState(null);
   const [allComments, setAllComments] = useState([]);
+  const [filters, setFilters] = useState([true,false,false,false,false]);
+
+
+  const updateFilter = (index, newValue) => {
+    setFilters(prevTableau => {
+      const newTableau = [...prevTableau];
+      newTableau[index] = newValue;
+      return newTableau;
+    });
+  };
 
   /*----------------------------------------------------------------
   function parseComment(comment) : 
@@ -83,12 +93,18 @@ const Home = () => {
       }
 
       const data = await response.json();
-      data.records = data.records.filter(ticket => 
-        ticket.STATUS.STATUS_ID !== "9" &&  // En attente de validation
-        ticket.STATUS.STATUS_ID !== "8" &&  // Clôturé
-        ticket.STATUS.STATUS_ID !== "7" &&  // Archivé
-        ticket.STATUS.STATUS_ID !== "43"    // Annulé par le demandeur
-      );
+      
+       
+      if(!filters[0])
+        data.records = data.records.filter(ticket => ticket.STATUS.STATUS_ID !== "12") // En cours
+      if(!filters[1])
+        data.records = data.records.filter(ticket => ticket.STATUS.STATUS_ID !== "9") // En attente de validation
+      if(!filters[2])
+        data.records = data.records.filter(ticket => ticket.STATUS.STATUS_ID !== "8") // Clôturé
+      if(!filters[3])
+        data.records = data.records.filter(ticket => ticket.STATUS.STATUS_ID !== "7") // Archivé
+      if(!filters[4])
+        data.records = data.records.filter(ticket => ticket.STATUS.STATUS_ID !== "43") // Annulé par le demandeur
 
 
       setAllTickets(data);
@@ -125,6 +141,36 @@ const Home = () => {
       <div className="logo">
         <Image src="/logo.png" width={699/2.2} height={414/2.2} alt="Stem Logo" />
       </div>
+      <h3>Filtres : </h3>
+
+      <div>
+        <label htmlFor="EnCours">En cours</label>
+        <input type="checkbox" id="EnCours" name="EnCours" checked={filters[0]} onChange={(event) => updateFilter(0, event.target.checked)}  />
+      </div>
+      
+      <div>
+        <label htmlFor="validate">En attente de validation</label>
+        <input type="checkbox" id="validate" name="validate" checked={filters[1]}  onChange={(event) => updateFilter(1, event.target.checked)}  />
+      </div>
+
+      <div>
+        <label htmlFor="EnCours">Clôturés</label>
+        <input type="checkbox" id="closed" name="closed" checked={filters[2]}  onChange={(event) => updateFilter(2, event.target.checked)}  />
+      </div>
+
+      <div>
+        <label htmlFor="EnCours">Archivé</label>
+        <input type="checkbox" id="archived" name="archived" checked={filters[3]}  onChange={(event) => updateFilter(3, event.target.checked)}  />
+      </div>
+
+      <div>
+        <label htmlFor="EnCours">Annulé par le demandeur</label>
+        <input type="checkbox" id="Canceled" name="Canceled" checked={filters[4]}  onChange={(event) => updateFilter(4, event.target.checked)}  />
+      </div>
+
+      <button onClick={getAllTickets}>Filtrer</button>
+
+      
       {(allTickets && allComments) && <Card allTickets={allTickets} allComments={allComments} />}
     </div>
   );
