@@ -14,6 +14,54 @@ h3 {
   color: #333;
 }
 
+.CommentInput {
+  width: 100%;
+  max-width: 400px; 
+  padding: 10px; 
+  font-size: 16px;
+  border: 2px solid #ccc; 
+  border-radius: 5px; 
+  background-color: #f8f9fa; 
+  outline: none; 
+  transition: border-color 0.3s, box-shadow 0.3s;
+  
+}
+
+
+.CommentInput:focus {
+  border-color: #097efc; 
+  box-shadow: 0px 4px 8px rgba(0, 123, 255, 0.2); 
+}
+
+.CommentInput::placeholder {
+  color: #999;
+  font-style: italic;
+}
+
+
+button {
+  background-color: #007bff; 
+  color: white; 
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px; 
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+button:hover {
+  background-color: #218838; 
+  transform: scale(1.05); 
+}
+
+button:active {
+  background-color: #1e7e34; 
+  transform: scale(0.98); 
+}
+
+
 .filters{
   text-align: center;
   max-width: 800px;
@@ -32,7 +80,7 @@ h3 {
  
 }
 .filters button {
-  margin-top: 10px;
+  margin-top: 20px;
   size: 100px;
   width: 100px;
  
@@ -64,7 +112,8 @@ h3 {
   padding: 5px;
   margin-bottom: 15px;
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
+  border-radius: 8px;
+  font-family: 'Arial', sans-serif;
 }
 
 .ticket:nth-child(even) {
@@ -80,7 +129,7 @@ h3 {
 
 .ticket button{
   display: block;
-  margin: 0 auto;
+  margin: 5 auto;
 }
 
 .value {
@@ -98,4 +147,48 @@ h3 {
 
 .ticket strong{
   color: #007bff;
+}
+
+.ticket label {
+  font-size: 18px;
+  color: #333;  
+  margin-bottom: 4px;
+}
+
+@media (max-width: 768px) {  /* Styles pour écrans inférieurs à 768px */
+  .container {
+    width: 95%;
+    padding: 10px;
+  }
+
+  .ticket {
+    padding: 10px;
+    border-left-width: 4px;
+    font-size: 14px;
+  }
+
+  .ticket label {
+    font-size: 14px;
+  }
+
+  .ticket input {
+    width: 90%;
+    max-width: 100%;
+    font-size: 14px;
+  }
+
+  .ticket button {
+    width: 100%;
+    padding: 12px;
+    font-size: 15px;
+  }
+
+  .filters {
+    max-width: 100%;
+    padding: 5px;
+  }
+
+  .filters button {
+    width: 100%;
+  }
 }
