@@ -65,13 +65,14 @@ function renderComment(commentArray) {
 
     Fonction qui envoie une requête PUT à l'API via l'API Route `/api/confirm`
   ----------------------------------------------------------------*/
-const SendConfirmation = async (e, RFC_NUMBER) => {
+const SendConfirmation = async (e, RFC_NUMBER,comment) => {
     e.preventDefault();
 
     try {
         const response = await fetch(`/api/confirm/${RFC_NUMBER}`, {
             method: "PUT",
-            headers: { "Content-Type": "application/json" }
+            headers: { "Content-Type": "application/json" },
+            body: comment
         });
 
         if (!response.ok) {
@@ -110,8 +111,11 @@ const Card = ({ allTickets, allComments }) => {
                         <br />
                         <br />
                         {renderComment(allComments.slice(0).reverse()[index])}
-                        <button onClick={(e) => SendConfirmation(e, ticket.RFC_NUMBER)}>
-                            Terminé
+                        <br/>
+                        <input className="CommentInput" id={`commentInput${index}`}  type="text" placeholder="Commentaire de résolution"></input>
+                        
+                        <button onClick={(e) => SendConfirmation(e, ticket.RFC_NUMBER,(document.getElementById(`commentInput${index}`) as HTMLInputElement).value)}>
+                            clôturer le ticket
                         </button>
                     </div>
                 ))}

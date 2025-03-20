@@ -4,20 +4,32 @@ import Image from 'next/image';
 import Card from './components/Card';
 
 const Home = () => {
-  const [allTickets, setAllTickets] = useState(null);
-  const [loadingRequests, setloadingRequests] = useState(true);
-  const [loadingComments, setloadingComments] = useState(true);
+  const [allTickets, setAllTickets] = useState([]);
+  const [loadingRequests, setLoadingRequests] = useState(true);
+  const [loadingComments, setLoadingComments] = useState(false);
   const [error, setError] = useState(null);
   const [allComments, setAllComments] = useState([]);
 
-  /*----------------------------------------------------------------
-  function parseComment(comment) : 
-    -comment :  chaine de caractère décrivant un tableau HTML telle qu'elle est reçue lors de la requête API,
-    -(return) split string : array contenant chaque case du tableau HTML
+  const [filters, setFilters] = useState({
+    enCours: true,
+    attenteValidation: false,
+    cloture: false,
+    archive: false,
+    annule: false,
+  });
 
-    La fonction parse la chaine de caractère reçu en supprimant les différentes balises qui composent le tableau HTML. 
-    On va ensuite séparer chaque case du tableau avec la méthode .split pour l'insérer dans un array que l'on renvoie.
-  ----------------------------------------------------------------*/
+  const filterOptions = [
+    { label: "En cours", key: "enCours", statusId: "12" },
+    { label: "En attente de validation", key: "attenteValidation", statusId: "9" },
+    { label: "Clôturé", key: "cloture", statusId: "8" },
+    { label: "Archivé", key: "archive", statusId: "7" },
+    { label: "Annulé par le demandeur", key: "annule", statusId: "43" },
+  ];
+
+  const updateFilter = (key, newValue) => {
+    setFilters((prev) => ({ ...prev, [key]: newValue }));
+  };
+
   function parseComment(comment) {
     const str_cleaned = comment.replaceAll("<table>", "")
       .replaceAll("</table>", "")
@@ -40,80 +52,52 @@ const Home = () => {
     return str_cleaned.split("<td>");
   }
 
-  /*----------------------------------------------------------------
-  function fetchAllComments() : Récupère tous les commentaires liés aux tickets.
-  ----------------------------------------------------------------*/
-  const fetchAllComments = async () => {
+  const fetchAllComments = async (filteredTickets) => {
     try {
-      setloadingComments(true);
-      const commentsPromises = allTickets.records.map(async (ticket) => {
-        const response = await fetch(`/api/tickets/${ticket.RFC_NUMBER}/comment`, {
-          method: "GET"
-        });
-
-        if (!response.ok) {
-          throw new Error(`Erreur ${response.status}: ${response.statusText}`);
-        }
+      setLoadingComments(true);
+      const commentsPromises = filteredTickets.map(async (ticket) => {
+        const response = await fetch(`/api/tickets/${ticket.RFC_NUMBER}/comment`);
+        if (!response.ok) throw new Error(`Erreur ${response.status}: ${response.statusText}`);
 
         const data = await response.json();
         return parseComment(data.COMMENT);
       });
 
-      const commentsArray = await Promise.all(commentsPromises);
-      setAllComments(commentsArray);
+      setAllComments(await Promise.all(commentsPromises));
     } catch (error) {
       setError(error.message);
     } finally {
-      setloadingComments(false);
+      setLoadingComments(false);
     }
   };
 
-  /*----------------------------------------------------------------
-  function getAllTickets() : Récupère tous les tickets et met à jour le state.
-  ----------------------------------------------------------------*/
   const getAllTickets = async () => {
     try {
-      setloadingRequests(true);
+      setLoadingRequests(true);
       setError(null);
+      const response = await fetch(`/api/tickets`);
 
-      const response = await fetch(`/api/tickets`, { method: "GET" });
-
-      if (!response.ok) {
-        throw new Error(`Erreur ${response.status}: ${response.statusText}`);
-      }
+      if (!response.ok) throw new Error(`Erreur ${response.status}: ${response.statusText}`);
 
       const data = await response.json();
-      data.records = data.records.filter(ticket => 
-        ticket.STATUS.STATUS_ID !== "9" &&  // En attente de validation
-        ticket.STATUS.STATUS_ID !== "8" &&  // Clôturé
-        ticket.STATUS.STATUS_ID !== "7" &&  // Archivé
-        ticket.STATUS.STATUS_ID !== "43"    // Annulé par le demandeur
+
+      // Appliquer le filtrage correctement
+      const filteredTickets = data.records.filter((ticket) =>
+        filterOptions.some((opt) => filters[opt.key] && ticket.STATUS.STATUS_ID === opt.statusId)
       );
 
-
-      setAllTickets(data);
+      setAllTickets(filteredTickets);
+      fetchAllComments(filteredTickets); // Ne récupérer que les commentaires des tickets filtrés
     } catch (error) {
       setError(error.message);
     } finally {
-      setloadingRequests(false);
+      setLoadingRequests(false);
     }
   };
 
-  /*----------------------------------------------------------------
-  useEffect() : Exécute la récupération des tickets au montage du composant.
-  ----------------------------------------------------------------*/
   useEffect(() => {
     getAllTickets();
   }, []);
-
-  /*----------------------------------------------------------------
-  useEffect() : Exécute la récupération des commentaires après chargement des tickets.
-  ----------------------------------------------------------------*/
-  useEffect(() => {
-    if (allTickets) {
-      fetchAllComments();
-    }
-  }, [loadingRequests]);
 
   if (loadingRequests) return <p>Chargement des requêtes...</p>;
   if (loadingComments) return <p>Chargement des commentaires...</p>;
@@ -123,9 +107,29 @@ const Home = () => {
     <div>
       <h1>Gestionnaire de Ticket Nexity</h1>
       <div className="logo">
-        <Image src="/logo.png" width={699/2.2} height={414/2.2} alt="Stem Logo" />
+        <Image src="/logo.png" width={699 / 2.2} height={414 / 2.2} alt="Stem Logo" />
       </div>
-      {(allTickets && allComments) && <Card allTickets={allTickets} allComments={allComments} />}
+
+      <div className="filters">
+        <h3>Filtres</h3>
+      
+        {filterOptions.map(({ label, key }) => (
+          <label key={key} className="filter-checkbox">
+            <input
+              type="checkbox"
+              checked={filters[key]}
+              onChange={(e) => updateFilter(key, e.target.checked)}
+            />
+            {label}
+          </label>
+        ))}
+        <br/>
+        <button onClick={getAllTickets}>Filtrer</button>
+      </div>
+
+      
+
+      {allTickets.length > 0 && allComments.length > 0 && <Card allTickets={{ records: allTickets }} allComments={allComments} />}
     </div>
   );
 };
