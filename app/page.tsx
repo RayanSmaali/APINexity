@@ -46,6 +46,10 @@ const Home = () => {
       .replaceAll("</ol>", "")
       .replaceAll("</li>", "")
       .replaceAll("</i>", "")
+      .replaceAll("<tbody>", "")
+      .replaceAll("</tbody>", "")
+      .replaceAll("<strong>", "")
+      .replaceAll("</strong>", "")
       .replaceAll("<br>", "\n")
       .replaceAll("<br />", `\n`)
       .replace("<td>", ""); // Replace normal pour ne supprimer que le premier
