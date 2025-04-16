@@ -1,3 +1,4 @@
+
 /*----------------------------------------------------------------
   function formatDate(dateString) : 
     - dateString : Chaîne de caractère indiquant la date et l'heure de création d'un ticket telle qu'elle est reçue par l'API.
@@ -68,7 +69,8 @@ function renderComment(commentArray) {
 const SendConfirmation = async (e, RFC_NUMBER,comment) => {
     e.preventDefault();
 
-    try {
+    try 
+    {
         const response = await fetch(`/api/confirm/${RFC_NUMBER}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -81,11 +83,17 @@ const SendConfirmation = async (e, RFC_NUMBER,comment) => {
 
         const data = await response.json();
         console.log("Action terminée avec succès :", data);
-        alert(`Le ticket ${RFC_NUMBER} a été marqué comme terminé.`);
-    } catch (error) {
+    } catch (error) 
+    {
         console.error("Erreur lors de la confirmation :", error);
         alert(`Erreur : Impossible de terminer le ticket ${RFC_NUMBER}.`);
+    } finally
+    {
+        
+        alert(`Le ticket ${RFC_NUMBER} a été marqué comme terminé.`);
+        window.location.reload();
     }
+    
 };
 
 /*----------------------------------------------------------------
@@ -117,6 +125,8 @@ const Card = ({ allTickets, allComments }) => {
                         <button onClick={(e) => SendConfirmation(e, ticket.RFC_NUMBER,(document.getElementById(`commentInput${index}`) as HTMLInputElement).value)}>
                             clôturer le ticket
                         </button>
+
+
                     </div>
                 ))}
         </div>

@@ -51,7 +51,7 @@ const Home = () => {
       .replaceAll("<strong>", "")
       .replaceAll("</strong>", "")
       .replaceAll("<br>", "\n")
-      .replaceAll("<br />", "\n")
+      .replaceAll("<br />", `\n`)
       .replace("<td>", ""); // Replace normal pour ne supprimer que le premier
 
     return str_cleaned.split("<td>");
@@ -60,7 +60,7 @@ const Home = () => {
   const fetchAllComments = async (filteredTickets) => {
     try {
       setLoadingComments(true);
-      const commentsPromises = filteredTickets.map(async (ticket) => {
+      const commentsPromises = filteredTickets.map(async (ticket,index) => {
         const response = await fetch(`/api/tickets/${ticket.RFC_NUMBER}/comment`);
         if (!response.ok) throw new Error(`Erreur ${response.status}: ${response.statusText}`);
 
