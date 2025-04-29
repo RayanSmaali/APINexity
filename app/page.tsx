@@ -19,7 +19,7 @@ const Home = () => {
   });
 
   const filterOptions = [
-    { label: "En cours", key: "enCours", statusId: "12" },
+    { label: "En attente de finalisation", key: "enCours", statusId: "12" },
     { label: "En attente de validation", key: "attenteValidation", statusId: "9" },
     { label: "Clôturé", key: "cloture", statusId: "8" },
     { label: "Archivé", key: "archive", statusId: "7" },
@@ -86,12 +86,11 @@ const Home = () => {
 
       const data = await response.json();
 
-      // Appliquer le filtrage correctement
       const filteredTickets = data.records.filter((ticket) =>
         filterOptions.some((opt) => filters[opt.key] && ticket.STATUS.STATUS_ID === opt.statusId)
       );
 
-      setAllTickets(filteredTickets);
+      setAllTickets(filteredTickets.reverse());
       fetchAllComments(filteredTickets); // Ne récupérer que les commentaires des tickets filtrés
     } catch (error) {
       setError(error.message);

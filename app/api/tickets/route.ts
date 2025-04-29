@@ -5,7 +5,7 @@ export async function GET() {
     const baseUrl = process.env.BASE_URL;
 
     try {
-        const response = await fetch(`${baseUrl}/requests`, {
+        const response = await fetch(`${baseUrl}/requests?sort=submit_date_ut+desc`, {
             method: "GET",
             headers: {
                 Authorization: `Bearer ${token}`,
