@@ -60,7 +60,7 @@ const Home = () => {
   const fetchAllComments = async (filteredTickets) => {
     try {
       setLoadingComments(true);
-      const commentsPromises = filteredTickets.map(async (ticket,index) => {
+      const commentsPromises = filteredTickets.map(async (ticket) => {
         const response = await fetch(`/api/tickets/${ticket.RFC_NUMBER}/comment`);
         if (!response.ok) throw new Error(`Erreur ${response.status}: ${response.statusText}`);
 
