@@ -19,7 +19,8 @@ const Home = () => {
   });
 
   const filterOptions = [
-    { label: "En attente de finalisation", key: "enCours", statusId: "12" },
+    { label: "En attente de finalisation", key: "enCours", statusId: "26" },
+    //{ label: "En cours", key: "enCours", statusId: "12" },
     { label: "En attente de validation", key: "attenteValidation", statusId: "9" },
     { label: "Clôturé", key: "cloture", statusId: "8" },
     { label: "Archivé", key: "archive", statusId: "7" },
